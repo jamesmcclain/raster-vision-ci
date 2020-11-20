@@ -1,0 +1,10 @@
+sudo: required
+
+services:
+   - docker
+
+script:
+   - ./build.sh
+
+deploy:
+   - ./publish.sh
