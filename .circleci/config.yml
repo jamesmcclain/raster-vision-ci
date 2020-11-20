@@ -1,0 +1,12 @@
+version: 2
+general:
+  branches:
+    only:
+      - master
+jobs:
+  build:
+    machine: true
+    steps:
+      - checkout
+      - run: ~/project/build.sh
+      - run: ~/project/publish.sh
