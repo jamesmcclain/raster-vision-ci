@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ ! -d raster-vision-master ]]; then
+    rm -f master.zip
     curl 'https://github.com/azavea/raster-vision/archive/master.zip' -L -C - -O
     unzip master.zip
 fi
@@ -16,13 +17,13 @@ WORKDIR=$(cat Dockerfile | grep -n '^WORKDIR /opt/src' | tail -1 | cut -f1 -d:)
 
 # Produce Dockerfile.base
 cat Dockerfile | head -n ${WORKDIR} | tail -n +2 | sed "s,\${CUDA_VERSION},${CUDA_VERSION}," > Dockerfile.base
-BASE_HASH=$(md5sum Dockerfile.base | cut -f1 -d' ')
+BASE_HASH=$(cat Dockerfile.base | md5sum | cut -f1 -d' ')
 BASE_IMAGE=${IMAGE}:${BASE_HASH}
 
 # Produce Dockerfile.python
 echo "FROM ${BASE_IMAGE}" > Dockerfile.python
 cat Dockerfile | tail -n +$(expr ${WORKDIR} + 1) >> Dockerfile.python
-PYTHON_HASH=$(md5sum Dockerfile.python | cut -f1 -d' ')
+PYTHON_HASH=$(cat Dockerfile.python $(find | grep 'requirements[a-z]*\.txt' | sort) | md5sum | cut -f1 -d' ')
 PYTHON_IMAGE=${IMAGE}:${PYTHON_HASH}
 
 # Produce Dockerfile.rv
