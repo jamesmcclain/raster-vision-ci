@@ -23,7 +23,7 @@ BASE_IMAGE=${IMAGE}:${BASE_HASH}
 # Produce Dockerfile.python
 echo "FROM ${BASE_IMAGE}" > Dockerfile.python
 cat Dockerfile | tail -n +$(expr ${WORKDIR} + 1) >> Dockerfile.python
-PYTHON_HASH=$(cat Dockerfile.python $(find | grep 'requirements[a-z]*\.txt') | md5sum | cut -f1 -d' ')
+PYTHON_HASH=$(cat Dockerfile.python $(find | grep 'requirements[a-z]*\.txt' | sort) | md5sum | cut -f1 -d' ')
 PYTHON_IMAGE=${IMAGE}:${PYTHON_HASH}
 
 # Produce Dockerfile.rv
